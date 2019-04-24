@@ -1,4 +1,4 @@
-# egao
+# egao [![Build Status](https://travis-ci.com/Akenaide/egao.svg?branch=master)](https://travis-ci.com/Akenaide/egao)
 
 A web app that uses [AngularDart](https://webdev.dartlang.org/angular) and
 [AngularDart Components](https://webdev.dartlang.org/components).
