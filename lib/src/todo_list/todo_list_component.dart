@@ -30,6 +30,7 @@ class TodoListComponent implements OnInit {
   @override
   Future<Null> ngOnInit() async {
     items = await todoListService.getTodoList();
+    print("hop");
   }
 
   void add() {
