@@ -1,0 +1,9 @@
+language: dart
+dart:
+  - stable
+  - dev
+dart_task:
+  - test: --plaform vm
+  - test: --plaform chrome
+  - dartanalyzer: --fatal-warnings lib
+  - dartfmt
