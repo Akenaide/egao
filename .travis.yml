@@ -2,8 +2,13 @@ language: dart
 dart:
   - stable
   - dev
+
 dart_task:
-  - test: --plaform vm
-  - test: --plaform chrome
+  - test: --platform vm
   - dartanalyzer: --fatal-warnings lib
   - dartfmt
+  - pub run build_runner test -- -p chrome
+
+cache:
+    directories:
+        - $HOME/.pub-cache
