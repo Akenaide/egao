@@ -19,11 +19,8 @@ class MainActivity : AppCompatActivity() {
     // Fonction appelée par le bouton qui sert à add un joueur
     fun okButtonTouched(button:View) {
 
-        ListOfPlayers.put(ListOfPlayers.size+1,Player(firstNameBox.text.toString(),lastN
-        ameBox.text.toString(),WSELCodeBox.text.toString(),nicknameBox.text.toString
-        (),serieBox.text.toString(),ListOfPlayers.size+1))
-        mainLabel.text = ListOfPlayers.get(ListOfPlayers.size)?.fullName()+" a été
-        ajouté (${ListOfPlayers.size} joueurs)"
+        ListOfPlayers.put(ListOfPlayers.size+1,Player(firstNameBox.text.toString(),lastNameBox.text.toString(),WSELCodeBox.text.toString(),nicknameBox.text.toString (),serieBox.text.toString(),ListOfPlayers.size+1))
+        mainLabel.text = ListOfPlayers.get(ListOfPlayers.size)?.fullName()+" a été ajouté (${ListOfPlayers.size} joueurs)"
         refreshPlayerList()
     }
     // Rafraichissement visuel de la liste de joueur sur le premier écran
@@ -46,15 +43,14 @@ class MainActivity : AppCompatActivity() {
         var firstRound:Round = Round()
 
         // Le round et sa liste de match sont ajoutés à la list des rounds, pour
-        garder un historique des rounds pour la gestion d'historique
+        // garder un historique des rounds pour la gestion d'historique
         firstRound.matchlist=matchList
         ListOfRound.add(firstRound)
 
         //Changement de page pour passer en gestion du tournoi
         setContentView(R.layout.tournament)
 
-        // Gestion procédurale des boutons pour avoir des duos [J1] [J2] pour
-        chaque match, du coup à priori tu t'en fout
+        // Gestion procédurale des boutons pour avoir des duos [J1] [J2] pour chaque match, du coup à priori tu t'en fout
         for(i in (1..ListOfPlayers.size)) {
             var nouveaubouton:Button = Button(linearLayout.context)
             if(i%2==1) {
@@ -77,8 +73,7 @@ class MainActivity : AppCompatActivity() {
             firstRound.matchlist.get((i-1)/2).matchButtons.add(nouveaubouton)
         }
     }
-    // Quand on clique sur un joueur, il est désigné gagnant du match. Le
-    changement de textsize sert juste au debugging
+    // Quand on clique sur un joueur, il est désigné gagnant du match. Le changement de textsize sert juste au debugging
     fun onPlayerButtonTouched(button:Button) {
         for(match in ListOfRound.get(currentRound).matchlist) {
             if(match.p1?.fullName()==button.text) {
@@ -92,17 +87,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-    // newRound génère une liste de match à partir de la liste des joueurs en
-    variable globale, passe la en paramètre si tu préfères
+    // newRound génère une liste de match à partir de la liste des joueurs en variable globale, passe la en paramètre si tu préfères
     fun newRound():MutableList<Match> {
 
-        var resultList = mutableListOf<Match>() // Liste de match à retourner à
-        la fin
-        var playerList = mutableListOf<Player>() // Liste des joueurs locale pour
-        ordonner pour les pairings
-        // On génère une liste de tous les entiers de 1 à [nombre de joueurs] qu'on
-        mélange, comme ça on distribue ces entiers uniques à chaque joueur pour
-        départager en 4eme tie break
+        var resultList = mutableListOf<Match>() // Liste de match à retourner à la fin
+        var playerList = mutableListOf<Player>() // Liste des joueurs locale pour ordonner pour les pairings
+        // On génère une liste de tous les entiers de 1 à [nombre de joueurs] qu'on mélange, comme ça on distribue
+        // ces entiers uniques à chaque joueur pour départager en 4eme tie break
         val rnglist = (1..ListOfPlayers.size).shuffled()
         for (player in ListOfPlayers.values) {
             player.rng = rnglist.get(player.ID-1)
@@ -111,34 +102,33 @@ class MainActivity : AppCompatActivity() {
         }
 
         // On trie les joueurs par ordre décroissant. player.compareTo(player) est
-        surchargé pour que la comparaison se face sur le score, s'il est égal, sur le ratio
-        de victoire des adversaires, s'il est égal, le ratio de victoire des adversaires des
-        adversaires, s'il est égal, l'entier unique RNG
-        playerList.sortDescending()
+        // surchargé pour que la comparaison se face sur le score, s'il est égal, sur le ratio
+        // de victoire des adversaires, s'il est égal, le ratio de victoire des adversaires des
+        // adversaires, s'il est égal, l'entier unique RNG
+        // playerList.sortDescending()
 
         var swap:Boolean
         var cont=true
         // Boucle de vérification que chaque joueur n'a pas affronté son adversaire.
-        Tant qu'on a pas fait une passe sans avoir eu à swap, on continue
+        // Tant qu'on a pas fait une passe sans avoir eu à swap, on continue
         while(cont) {
             swap=false
             for (i in 0..playerList.size / 2 - 1) {
                 var k = 0
-                // Si le joueur a affronté son adversaire, on swap son adversaire avec
-                l'adversaire suivant dans la liste. S'il a joué contre le nouvel adversaire, on
-                restore l'ordre, et on swap avec un adversaire après, et bis repetita.
-                while (playerList.get(2 * i).listOfOpponent.contains(playerList.get(2 * i
-                + 1).ID) && (2 * i + k) <= playerList.size) {
+                // Si le joueur a affronté son adversaire, on swap son adversaire avec l'adversaire suivant dans la liste. S'il 
+                // a joué contre le nouvel adversaire, on restore l'ordre, et on swap avec un adversaire après, et bis repetita.
+                while (playerList.get(2 * i).listOfOpponent.contains(playerList.get(2 * i + 1).ID) && (2 * i + k) <= playerList.size) {
                     if (k != 0) Collections.swap(playerList, i + 1, i + 1 + k)
                     Collections.swap(playerList, i + 1, i + 2 + k)
                     k++
                     swap = true
                 }
             }
+
             for (i in playerList.size / 2..1) {
                 var k = 0
                 // Après une passe descendante du premier match à l'avant dernier,
-                on fait une passe ascendante du dernier au second
+                // on fait une passe ascendante du dernier au second
                 while (playerList.get(2 * i).listOfOpponent.contains(playerList.get(2 * i
                 - 1).ID)) {
                     if (k != 0) Collections.swap(playerList, i + 1, i + 1 + k)
@@ -151,7 +141,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // La liste de joueur étant maintenant ordonnée comme il faut, on peut
-        ranger chaque paire de joueur dans des objets Match qu'on ajoute à la liste
+        // ranger chaque paire de joueur dans des objets Match qu'on ajoute à la liste
         for (i in (0..ListOfPlayers.size / 2 - 1)) {
             resultList.add(Match(playerList.get(2 * i), playerList.get(2 * i + 1)))
             resultList.get(i).IDmatch=i/2+1
@@ -159,12 +149,15 @@ class MainActivity : AppCompatActivity() {
 
         return resultList
     }
+
+
+
     //Gestion du bouton "Next Round" (attribution des résultats, génération
     nouvelle ronde)
     fun nextRound(button:View) {
         if(currentMatch==0) {
             //On fait une passe sur les matchs pour attribuer les victoires et ajouter
-            les adversaires aux listes d'adversaires des joueurs
+            // les adversaires aux listes d'adversaires des joueurs
             for(match in ListOfRound.get(currentRound).matchlist) {
                 if(match.p1?.fullName()==match.winner) {
                     match.p1?.result(true,match.p2?.ID)
@@ -184,7 +177,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             // Faute de meilleure solution, je fais disparaitre mes vieux boutons
-            comme un sale. Tu peux ignorer j'imagine.
+            // comme un sale. Tu peux ignorer j'imagine.
             for(match in ListOfRound.last().matchlist) {
                 match.matchButtons.get(0).visibility= View.GONE
                 match.matchButtons.get(1).visibility= View.GONE
