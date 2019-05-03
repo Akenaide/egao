@@ -33,7 +33,7 @@ void main() {
       var _tourna = Tournament();
       addXplayer(7, _tourna);
       _tourna.start();
-      expect(_tourna.getPlayeryName("BYE"), TypeMatcher<Player>());
+      expect(_tourna.getPlayeryByName("BYE"), TypeMatcher<Player>());
     });
 
     test("Hasn't Bye", () {
@@ -41,7 +41,7 @@ void main() {
       addXplayer(8, _tourna);
       _tourna.start();
 
-      void exceptionExpected() => _tourna.getPlayeryName("BYE");
+      void exceptionExpected() => _tourna.getPlayeryByName("BYE");
 
       expect(exceptionExpected, throwsA(TypeMatcher<PlayerNotFound>()));
     });

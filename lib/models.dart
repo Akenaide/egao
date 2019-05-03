@@ -49,7 +49,7 @@ class Tournament {
     }
   }
 
-  getPlayeryName(String name) {
+  getPlayeryByName(String name) {
     for (var player in players) {
       if (player.name == name) {
         return player;
