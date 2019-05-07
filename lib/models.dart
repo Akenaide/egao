@@ -1,3 +1,5 @@
+const WIN_POWER = 10;
+
 class PlayerNotFound implements Exception {
   String msg;
   PlayerNotFound(this.msg);
@@ -8,6 +10,10 @@ class PlayerNotFound implements Exception {
 
 class Player implements Comparable {
   String name = "";
+
+  int power = 0;
+
+  bool available = true;
 
   Player({this.name});
 
@@ -22,7 +28,14 @@ class Player implements Comparable {
 class Match {
   List<Player> players = [];
 
+  Player winner;
+
   Match(this.players);
+
+  void setWinner(Player player) {
+    winner = player;
+    player.power = player.power + WIN_POWER;
+  }
 }
 
 class Round {
@@ -31,9 +44,20 @@ class Round {
   List<Match> matches = [];
 
   void genMatches(List<Player> players) {
+    players.forEach((Player player) => player.available = true);
+
     for (var i = 0; i < players.length / 2; i++) {
-      int step = i * 2;
-      matches.add(Match([players[step], players[step + 1]]));
+      Player p1, p2;
+      p1 = players.firstWhere((Player player) {
+        return player.available;
+      });
+      p1.available = false;
+
+      p2 = players.firstWhere((Player player) {
+        return player.available && player.power == p1.power;
+      });
+      p2.available = false;
+      matches.add(Match([p1, p2]));
     }
   }
 }
