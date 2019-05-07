@@ -6,18 +6,41 @@ class PlayerNotFound implements Exception {
   String toString() => "Player $msg not found" ?? 'PlayerNotFound';
 }
 
-class Round {}
-
-class Player {
+class Player implements Comparable {
   String name = "";
 
   Player({this.name});
 
   String toString() => name;
+
+  @override
+  int compareTo(other) {
+    return name.compareTo(other.name);
+  }
+}
+
+class Match {
+  List<Player> players = [];
+
+  Match(this.players);
+}
+
+class Round {
+  int number = 0;
+
+  List<Match> matches = [];
+
+  void genMatches(List<Player> players) {
+    for (var i = 0; i < players.length / 2; i++) {
+      int step = i * 2;
+      matches.add(Match([players[step], players[step + 1]]));
+    }
+  }
 }
 
 class Tournament {
   List<Player> players = [];
+  List<Round> rounds = [];
 
   int get playerNumbers {
     return players.length;
@@ -50,11 +73,20 @@ class Tournament {
   }
 
   getPlayeryByName(String name) {
-    for (var player in players) {
-      if (player.name == name) {
-        return player;
-      }
+    try {
+      return players.firstWhere((Player player) => player.name == name);
+    } catch (StateError) {
+      throw PlayerNotFound(name);
     }
-    throw PlayerNotFound(name);
+  }
+
+  Round genRound() {
+    Round newRound = Round();
+    rounds.add(newRound);
+
+    newRound.number = rounds.length;
+    newRound.genMatches(players);
+
+    return newRound;
   }
 }
