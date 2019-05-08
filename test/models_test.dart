@@ -82,12 +82,11 @@ void main() {
     });
   });
   group("Paring", () {
-    test("round 2 win VS win", () {
+    test("simple tournament power of 2", () {
       var _tourna = Tournament();
-      addXplayer(36, _tourna);
+      addXplayer(64, _tourna);
       _tourna.start();
-      for (var i = 0; i < 2; i++) {
-        print("round $i");
+      for (var i = 0; i < _tourna.roundNumber; i++) {
         Round _round = _tourna.genRound();
         for (var match in _round.matches) {
           expect(match.players[0].power, equals(match.players[1].power));
