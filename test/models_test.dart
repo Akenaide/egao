@@ -96,5 +96,27 @@ void main() {
         }
       }
     });
+
+    test("Avoid same opponent", () {
+      var _tourna = Tournament();
+      addXplayer(128, _tourna);
+      _tourna.start();
+      for (var i = 0; i < _tourna.roundNumber; i++) {
+        Round _round = _tourna.genRound();
+        for (var match in _round.matches) {
+          match.setWinner(match.players[0]);
+        }
+      }
+      for (var player in _tourna.players) {
+        for (var opponent in player.opponents) {
+          int occurence = player.opponents.where((Player _oppo) {
+            return _oppo == opponent;
+          }).length;
+          expect(1, occurence,
+              reason:
+                  "Player $player was paired more than one againts $opponent (${player.opponents})");
+        }
+      }
+    });
   });
 }
