@@ -80,6 +80,50 @@ void main() {
 
       expect(exceptionExpected, throwsA(TypeMatcher<PlayerNotFound>()));
     });
+
+    test("Standing", () {
+      var _tourna = Tournament();
+      var expected = List<Player>();
+      Player p1 = Player.score(name: "p1", win: 4, loose: 0);
+      Player p2 = Player.score(name: "p2", win: 3, loose: 1);
+      Player p3 = Player.score(name: "p3", win: 0, loose: 4);
+
+      expected.add(p1);
+      expected.add(p2);
+      expected.add(p3);
+
+      _tourna.addPlayer(p1);
+      _tourna.addPlayer(p2);
+      _tourna.addPlayer(p3);
+
+      expect(expected, equals(_tourna.standing));
+    });
+
+    test("Righ oppo advance", () {
+      var _tourna = Tournament();
+      var expected = List<Player>();
+      addXplayer(7, _tourna);
+      _tourna.start();
+
+      for (var i = 0; i < _tourna.roundNumber; i++) {
+        Round _round = _tourna.genRound();
+        for (var match in _round.matches) {
+          match.setWinner(match.players[0]);
+        }
+      }
+
+      // _tourna.standing[0].score = "3-0";
+      expect(_tourna.standing[0].score, equals("3-0"));
+      expect(_tourna.standing[1].score, equals("2-1"));
+      expect(_tourna.standing[2].score, equals("2-1"));
+      expect(_tourna.standing[3].score, isIn(["2-1", "1-2"]));
+      expect(_tourna.standing[4].score, isIn(["2-1", "1-2"]));
+      expect(_tourna.standing[5].score, equals("1-2"),
+          reason: _tourna.standing[5].opponents.toString());
+      expect(_tourna.standing[6].score, equals("1-2"));
+
+      fail("message");
+    });
   });
   group("Paring", () {
     test("simple tournament power of 2", () {
@@ -97,9 +141,31 @@ void main() {
       }
     });
 
-    test("Avoid same opponent", () {
+    test("Avoid same opponent power of 2", () {
       var _tourna = Tournament();
       addXplayer(128, _tourna);
+      _tourna.start();
+      for (var i = 0; i < _tourna.roundNumber; i++) {
+        Round _round = _tourna.genRound();
+        for (var match in _round.matches) {
+          match.setWinner(match.players[0]);
+        }
+      }
+      for (var player in _tourna.players) {
+        for (var opponent in player.opponents) {
+          int occurence = player.opponents.where((Player _oppo) {
+            return _oppo == opponent;
+          }).length;
+          expect(1, occurence,
+              reason:
+                  "Player $player was paired more than one againts $opponent (${player.opponents})");
+        }
+      }
+    });
+
+    test("Avoid same opponent", () {
+      var _tourna = Tournament();
+      addXplayer(7, _tourna);
       _tourna.start();
       for (var i = 0; i < _tourna.roundNumber; i++) {
         Round _round = _tourna.genRound();

@@ -18,11 +18,15 @@ class PairingError implements Exception {
 
 class Player implements Comparable {
   String name = "";
+  int win = 0;
+  int loose = 0;
   int power = 0;
   bool available = true;
   List<Player> opponents = [];
 
   Player({this.name});
+
+  Player.score({this.name, this.win, this.loose});
 
   String toString() => name;
 
@@ -35,6 +39,10 @@ class Player implements Comparable {
     bool alreadyFought = opponents.contains(player);
     return player.available && player.power == power && !alreadyFought;
   }
+
+  String get score {
+    return "$win-$loose";
+  }
 }
 
 class Match {
@@ -44,6 +52,8 @@ class Match {
 
   void setWinner(Player player) {
     winner = player;
+    winner.win = winner.win + 1;
+    winner.opponents.last.loose = winner.opponents.last.loose + 1;
     player.power = player.power + WIN_POWER;
   }
 }
@@ -121,6 +131,12 @@ class Tournament {
       return 6;
     }
     return 7;
+  }
+
+  List<Player> get standing {
+    var _sorted = List<Player>.from(players);
+    _sorted.sort((Player p1, Player p2) => (p1.win - p1.loose) > (p2.win - p2.loose) ? 0 : 1);
+    return _sorted;
   }
 
   void start() {
